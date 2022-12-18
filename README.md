@@ -1,1 +1,1 @@
-# Word-Filter
+# Word Filter Plugins
