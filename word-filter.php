@@ -1,12 +1,11 @@
 <?php 
 /**
  * Plugin Name: Word Filer plugin
- * Description: A truly amazing plugin for filtering words in WordPress Post(s), and Page(s)
+ * Description: A truly amazing plugin for filtering words in WordPress Post(s), and Page(s).
  * Version: 1.0.0
  * Author: Mike Kipruto
  * Author URI: https://kipmyk.co.ke/
  * Text Domain: wfpdomain
- * Domain Path: /languages
  */
 
  if(!defined('ABSPATH')) exit; //exist if access directly
@@ -14,11 +13,31 @@
  class OurWordFilterPlugin{
     /**
      * Primary Class Constructor
-     * @since {version}
+     * @since 1.0.0
      */
     function __construct(){
         // defining actions and filters
         add_action( 'admin_menu', array($this, 'OurMenu'));
+        add_action('admin_init', array($this, 'OurSettings'));
+        if (get_option('plugin_words_to_filter')) add_filter('the_content', array($this, 'filterLogic'));
+    }
+    function OurSettings(){
+        add_settings_section( 'replacement-text-section', null, null, 'word-filter-options' );
+        register_setting('replacementFields', 'replacementText');
+        add_settings_field( 'replacement-text', 'Filter Text', array($this, 'replacementFieldHTML'), 'word-filter-options', 'replacement-text-section');
+    }
+    function replacementFieldHTML(){?>
+        <input type="text" name="replacementText" id="" value="<?php echo esc_attr( get_option('replacementText', '***') )?>">
+        <p class="description">Leave blank to simply remove the filtered words.</p>
+    <?php }
+    /**
+     * Register filter logic
+     * @since 1.0.0
+     */
+    function filterLogic($content) {
+        $badWords = explode(',', get_option('plugin_words_to_filter'));
+        $badWordsTrimmed = array_map('trim', $badWords);
+        return str_ireplace($badWordsTrimmed, esc_html(get_option('replacementText', '****')), $content);
     }
     /**
      * Register admin menu
@@ -31,12 +50,16 @@
     }
     /**
      * Load custom css for the admin page
-     * @since {version}
+     * @since 1.0.0
      */
-
     function mainPageAssets() {
       wp_enqueue_style('filterAdminCss', plugin_dir_url(__FILE__) . '/assets/css/styles.css');
     }
+    /**
+     * Handler form function
+     * Fixed some security before saving the word filters
+     * @since 1.0.0
+     */
     function handleForm() {
         if (wp_verify_nonce($_POST['ourNonce'], 'saveFilterWords') AND current_user_can('manage_options')) {
           update_option('plugin_words_to_filter', sanitize_text_field($_POST['plugin_words_to_filter'])); ?>
@@ -48,10 +71,10 @@
             <p>Sorry, you do not have permission to perform that action.</p>
           </div>
         <?php } 
-      }
+    }
     /**
      * Word Filter page HTML
-     * @since {version}
+     * @since 1.0.0
      */
     function wordFilterPage() { ?>
         <div class="wrap">
@@ -67,13 +90,23 @@
             <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
           </form>
         </div>
-      <?php }
+    <?php }
     /**
      * Word Filter options submenu
-     * @since {version}
+     * @since 1.0.0
      */
     function optionsSubPage(){?>
-        optionsSubPage
+        <div class="wrap">
+            <h1>Word Filter Options</h1>
+            <form action="options.php" method="post">
+                <?php
+                    settings_errors();
+                    settings_fields( 'replacementFields' );
+                    do_settings_sections( 'word-filter-options' );
+                    submit_button();
+                ?>
+            </form>
+        </div>
     <?php }
  }
  $ourWordFilterPlugin = new OurWordFilterPlugin();
