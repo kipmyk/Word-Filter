@@ -1,7 +1,7 @@
 <?php 
 /**
  * Plugin Name: Word Filer plugin
- * Description: A truly amazing plugin for post word count, and read time approximation.
+ * Description: A truly amazing plugin for filtering words in WordPress Post(s), and Page(s)
  * Version: 1.0.0
  * Author: Mike Kipruto
  * Author URI: https://kipmyk.co.ke/
@@ -26,7 +26,7 @@
      *
      */
     function OurMenu(){
-       
+        add_menu_page( 'Word to Filter', 'Word Filter', 'manage_options', 'ourwordfilter', array($this, 'wordFilterPage'), 'dashicons-smiley', 7 );
     }
  }
  $ourWordFilterPlugin = new OurWordFilterPlugin();
