@@ -26,7 +26,21 @@
      *
      */
     function OurMenu(){
-        add_menu_page( 'Word to Filter', 'Word Filter', 'manage_options', 'ourwordfilter', array($this, 'wordFilterPage'), 'dashicons-smiley', 7 );
+        add_menu_page( 'Word to Filter', 'Word Filter', 'manage_options', 'ourwordfilter', array($this, 'wordFilterPage'), 'dashicons-smiley', 100 );
+        add_submenu_page( 'ourwordfilter', 'Words to Filter', 'Words List', 'manage_options', 'ourwordfilter', array($this, 'wordFilterPage'));
+        add_submenu_page( 'ourwordfilter', 'Word Filer Options', 'options', 'manage_options', 'word-filter-options', array($this, 'optionsSubPage'));
     }
+    /**
+     * Word Filter page HTML
+     */
+    function wordFilterPage(){?>
+        Word Filter page HTML
+    <?php }
+    /**
+     * Word Filter options submenu
+     */
+    function optionsSubPage(){?>
+        optionsSubPage
+    <?php }
  }
  $ourWordFilterPlugin = new OurWordFilterPlugin();
