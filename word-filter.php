@@ -1,7 +1,7 @@
 <?php 
 /**
  * Plugin Name: Word Filer plugin
- * Description: A truly amazing plugin for filtering words in WordPress Post(s), and Page(s).
+ * Description: A truly amazing plugin for filtering words in WordPress Posts.
  * Version: 1.0.0
  * Author: Mike Kipruto
  * Author URI: https://kipmyk.co.ke/
